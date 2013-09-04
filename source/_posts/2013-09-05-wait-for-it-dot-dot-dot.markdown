@@ -1,9 +1,8 @@
 ---
 layout: post
-title: "Test"
-date: 2013-09-04 14:23
+title: "Wait for it..."
+date: 2013-09-05 09:57
 comments: true
 categories: 
 ---
 
-Hello world
