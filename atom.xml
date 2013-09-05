@@ -4,7 +4,7 @@
   <title><![CDATA[rzymek.github.io]]></title>
   <link href="http://rzymek.github.io/atom.xml" rel="self"/>
   <link href="http://rzymek.github.io/"/>
-  <updated>2013-09-04T14:24:46+02:00</updated>
+  <updated>2013-09-05T10:00:10+02:00</updated>
   <id>http://rzymek.github.io/</id>
   <author>
     <name><![CDATA[Krzysztof Rzymkowski]]></name>
@@ -14,11 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Test]]></title>
-    <link href="http://rzymek.github.io/blog/2013/09/04/test/"/>
-    <updated>2013-09-04T14:23:00+02:00</updated>
-    <id>http://rzymek.github.io/blog/2013/09/04/test</id>
-    <content type="html"><![CDATA[<p>Hello world</p>
+    <title type="html"><![CDATA[Wait for it...]]></title>
+    <link href="http://rzymek.github.io/blog/2013/09/05/wait-for-it-dot-dot-dot/"/>
+    <updated>2013-09-05T09:57:00+02:00</updated>
+    <id>http://rzymek.github.io/blog/2013/09/05/wait-for-it-dot-dot-dot</id>
+    <content type="html"><![CDATA[
 ]]></content>
   </entry>
   
