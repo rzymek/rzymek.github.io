@@ -5,13 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - rzymek.github.io</title>
+  <title>JBoss 7 hot deployent - rzymek.github.io</title>
   <meta name="author" content="Krzysztof Rzymkowski">
 
   
-  <meta name="description" content=" Blog Archive 2013 Wait for it&#8230;
-Sep 05 2013 JBoss 7 hot deployent
-Sep 04 2013 Recent Posts Wait for It... JBoss 7 Hot Deployent ">
+  <meta name="description" content="JBoss 7 offers very fast redeployment. There are a few ways to trigger it.
+Let&rsquo;s say you want to redeploy my.war Redeploying using the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +19,7 @@ Sep 04 2013 Recent Posts Wait for It... JBoss 7 Hot Deployent ">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://rzymek.github.io/blog/archives">
+  <link rel="canonical" href="http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="rzymek.github.io" type="application/atom+xml">
@@ -66,41 +65,87 @@ Sep 04 2013 Recent Posts Wait for It... JBoss 7 Hot Deployent ">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      <h1 class="entry-title">JBoss 7 Hot Deployent</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-04T14:29:00+02:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>JBoss 7 offers very fast redeployment. There are a few ways to trigger it.
+Let&rsquo;s say you want to redeploy <code>my.war</code></p>
 
-  
-  <h2>2013</h2>
+<h3>Redeploying using the filesystem</h3>
 
-<article>
-  
-<h1><a href="/blog/2013/09/05/wait-for-it-dot-dot-dot/">Wait for it&#8230;</a></h1>
-<time datetime="2013-09-05T09:57:00+02:00" pubdate><span class='month'>Sep</span> <span class='day'>05</span> <span class='year'>2013</span></time>
+<pre><code>cp my.war $JBOSS7/standalone/deployments/
+touch $JBOSS7/standalone/deployments/my.war.dodeploy
+</code></pre>
 
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/blog/2013/09/04/jboss-7-hot-deployent/">JBoss 7 hot deployent</a></h1>
-<time datetime="2013-09-04T14:29:00+02:00" pubdate><span class='month'>Sep</span> <span class='day'>04</span> <span class='year'>2013</span></time>
-
-
-</article>
-
+<h3></h3>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Krzysztof Rzymkowski</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-04T14:29:00+02:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent/" data-via="" data-counturl="http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/09/05/wait-for-it-dot-dot-dot/" title="Next Post: Wait for it...">Wait for it... &raquo;</a>
+      
+    </p>
+  </footer>
 </article>
 
 </div>
