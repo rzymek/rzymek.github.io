@@ -4,7 +4,7 @@
   <title><![CDATA[rzymek.github.io]]></title>
   <link href="http://rzymek.github.io/atom.xml" rel="self"/>
   <link href="http://rzymek.github.io/"/>
-  <updated>2013-09-06T13:20:52+02:00</updated>
+  <updated>2013-09-06T14:58:17+02:00</updated>
   <id>http://rzymek.github.io/</id>
   <author>
     <name><![CDATA[Krzysztof Rzymkowski]]></name>
@@ -78,7 +78,7 @@ If you&rsquo;re using <code>git</code> then put the follwing lines in the projec
 
 <p>Note that <code>WEB-INF/classes</code> will be removed by default as is declared as <code>outputDirectory</code>.</p>
 
-<h2>Setting up JBoss/WildFly</h2>
+<h2>Setting up JBoss7/WildFly</h2>
 
 <p>Linux users have it easy (MacOS probaly too) &ndash; just symlink <code>src/main/webapp</code> in <code>standalone/deployments</code>:</p>
 
@@ -101,11 +101,15 @@ After changing Java sources do</p>
 <pre><code>touch $WILDFLY/standalone/deployments/my.war.dodeploy
 </code></pre>
 
-<p>After changing dependencies in the <code>pom.xml</code> do</p>
+<p>No need to call Maven here. Eclipse puts the compiled class files rigth into place.</p>
+
+<p>If you change the dependencies in the <code>pom.xml</code> do</p>
 
 <pre><code>mvn clean compile war:inplace
 touch $WILDFLY/standalone/deployments/my.war.dodeploy
 </code></pre>
+
+<p>This will fully regenerate the <code>WEB-INF/lib</code> dir.</p>
 ]]></content>
   </entry>
   

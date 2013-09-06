@@ -151,7 +151,7 @@ If you&rsquo;re using <code>git</code> then put the follwing lines in the projec
 
 <p>Note that <code>WEB-INF/classes</code> will be removed by default as is declared as <code>outputDirectory</code>.</p>
 
-<h2>Setting up JBoss/WildFly</h2>
+<h2>Setting up JBoss7/WildFly</h2>
 
 <p>Linux users have it easy (MacOS probaly too) &ndash; just symlink <code>src/main/webapp</code> in <code>standalone/deployments</code>:</p>
 
@@ -174,11 +174,15 @@ After changing Java sources do</p>
 <pre><code>touch $WILDFLY/standalone/deployments/my.war.dodeploy
 </code></pre>
 
-<p>After changing dependencies in the <code>pom.xml</code> do</p>
+<p>No need to call Maven here. Eclipse puts the compiled class files rigth into place.</p>
+
+<p>If you change the dependencies in the <code>pom.xml</code> do</p>
 
 <pre><code>mvn clean compile war:inplace
 touch $WILDFLY/standalone/deployments/my.war.dodeploy
 </code></pre>
+
+<p>This will fully regenerate the <code>WEB-INF/lib</code> dir.</p>
 </div>
 
 
@@ -212,6 +216,10 @@ touch $WILDFLY/standalone/deployments/my.war.dodeploy
   <a href="//twitter.com/share" class="twitter-share-button" data-url="http://rzymek.github.io/blog/2013/09/05/exploaded-war/" data-via="" data-counturl="http://rzymek.github.io/blog/2013/09/05/exploaded-war/" >Tweet</a>
   
   
+  <div class="g-plusone" data-size="small"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
   
 </div>
 
@@ -238,6 +246,40 @@ touch $WILDFLY/standalone/deployments/my.war.dodeploy
   </ul>
 </section>
 
+<section>
+  <h1>Stack Overflow</h1>
+  <a href="http://stackoverflow.com/users/211205/rzymek"><img src="http://stackoverflow.com/users/flair/211205.png" width="208" height="58" alt="profile for rzymek at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for rzymek at Stack Overflow, Q&amp;A for professional and enthusiast programmers"></a>
+</section>
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/rzymek">@rzymek</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'rzymek',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
 
 
 
@@ -258,7 +300,24 @@ touch $WILDFLY/standalone/deployments/my.war.dodeploy
 
 
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 
