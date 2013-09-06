@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[rzymek.github.io]]></title>
+  <link href="http://rzymek.github.io/atom.xml" rel="self"/>
+  <link href="http://rzymek.github.io/"/>
+  <updated>2013-09-06T10:23:57+02:00</updated>
+  <id>http://rzymek.github.io/</id>
+  <author>
+    <name><![CDATA[Krzysztof Rzymkowski]]></name>
+    <email><![CDATA[eerzymek@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Exploaded WAR with Maven and Eclipse]]></title>
+    <link href="http://rzymek.github.io/blog/2013/09/05/exploaded-war/"/>
+    <updated>2013-09-05T16:07:00+02:00</updated>
+    <id>http://rzymek.github.io/blog/2013/09/05/exploaded-war</id>
+    <content type="html"><![CDATA[<p>The aim: setup a maven war project and JBoss7/WildFly so that the only thing needed to see your changes is <code>touch my.war.dodeploy</code> and <code>F5</code> in the browser.</p>
+
+<h2>Setting up Maven</h2>
+
+<p>First thing to do is to setup <code>outputDirectory</code>, so that Eclipse will put the class files instantly in the right place:</p>
+
+<pre><code>&lt;project&gt;
+    &lt;build&gt;
+        &lt;outputDirectory&gt;${basedir}/src/main/webapp/WEB-INF/classes&lt;/outputDirectory&gt;
+    ...     
+</code></pre>
+
+<p>Now you need to update Eclipse <code>.project</code> file:</p>
+
+<pre><code>mvn eclipse:eclipse
+</code></pre>
+
+<p>If you haven&rsquo;t done that already, now&rsquo;s the time to do <code>File &gt; Import &gt; Existing Projects into Workspace</code> in Eclipse. Otherwize just refresh your project.</p>
+
+<p>Setup the complete exploaded web app in <code>src/main/webapp</code> using <a href="https://maven.apache.org/plugins/maven-war-plugin/inplace-mojo.html">war:inplace</a></p>
+
+<pre><code>mvn war:inplace
+</code></pre>
+
+<p>This will essentially copy declared runtime dependencies to <code>src/main/webapp/WEB-INF/lib</code></p>
+
+<h3>Keepeing it clean</h3>
+
+<p>Make sure not to commit <code>lib</code> and <code>classes</code> from <code>src/main/webapp/WEB-INF/</code> to your source control.
+If you&rsquo;re using <code>git</code> then put the follwing lines in the projects root <code>.gitignore</code>:</p>
+
+<pre><code>/src/main/webapp/WEB-INF/lib
+/src/main/webapp/WEB-INF/classes
+</code></pre>
+
+<p>One more thing &ndash; let&rsquo;s tell the <code>clean</code> plugin to remove the generated <code>WEB-INF/lib</code> directory:</p>
+
+<pre><code>&lt;project&gt;
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-clean-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.4.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;filesets&gt;
+                        &lt;fileset&gt;
+                            &lt;directory&gt;${basedir}/src/main/webapp/WEB-INF/lib&lt;/directory&gt;
+                            &lt;includes&gt;
+                                &lt;include&gt;**/*&lt;/include&gt;
+                            &lt;/includes&gt;
+                        &lt;/fileset&gt;
+                    &lt;/filesets&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;       
+    ...
+</code></pre>
+
+<p>Note that <code>WEB-INF/classes</code> will be removed by default as is declared as <code>outputDirectory</code>.</p>
+
+<h2>Setting up JBoss/WildFly</h2>
+
+<p>Linux users have it easy (MacOS probaly too) &ndash; just symlink <code>src/main/webapp</code> in <code>standalone/deployments</code>:</p>
+
+<pre><code>cd $WILDFLY/standalone/deployments
+ln -s $MY_PROJECT/src/main/webapp my.war
+</code></pre>
+
+<p>Now the only thing to do after you&rsquo;ve changes some Java files is to</p>
+
+<pre><code>touch $WILDFLY/standalone/deployments/my.war.dodeploy
+</code></pre>
+
+<p>If you don&rsquo;t have symlinks on your system (e.g. Windows) &ndash; you&rsquo;ll need to do some additional setup. I&rsquo;ll describe it in another post.</p>
+
+<h2>Development cycle</h2>
+
+<p>All static file changes are instantly visible in the browser.
+After changing Java sources do</p>
+
+<pre><code>touch $WILDFLY/standalone/deployments/my.war.dodeploy
+</code></pre>
+
+<p>After changing dependencies in the <code>pom.xml</code> do</p>
+
+<pre><code>mvn clean compile war:inplace
+touch $WILDFLY/standalone/deployments/my.war.dodeploy
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JBoss 7 hot deployent]]></title>
+    <link href="http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent/"/>
+    <updated>2013-09-04T14:29:00+02:00</updated>
+    <id>http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent</id>
+    <content type="html"><![CDATA[<p>JBoss 7 offers very fast redeployment. There are a few ways to trigger it.
+Let&rsquo;s say you want to redeploy <code>my.war</code></p>
+
+<h3>Redeploying using the filesystem</h3>
+
+<pre><code>cp my.war $JBOSS7/standalone/deployments/
+touch $JBOSS7/standalone/deployments/my.war.dodeploy
+</code></pre>
+
+<h3></h3>
+]]></content>
+  </entry>
+  
+</feed>
