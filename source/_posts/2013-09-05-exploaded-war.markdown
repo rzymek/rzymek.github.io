@@ -58,7 +58,7 @@ One more thing - let's tell the `clean` plugin to remove the generated `WEB-INF/
 		...
 Note that `WEB-INF/classes` will be removed by default as is declared as `outputDirectory`.
 
-## Setting up JBoss/WildFly
+## Setting up JBoss7/WildFly
 
 Linux users have it easy (MacOS probaly too) - just symlink `src/main/webapp` in `standalone/deployments`:
 
@@ -77,8 +77,11 @@ All static file changes are instantly visible in the browser.
 After changing Java sources do
 
     touch $WILDFLY/standalone/deployments/my.war.dodeploy
-After changing dependencies in the `pom.xml` do 
+No need to call Maven here. Eclipse puts the compiled class files rigth into place.
+
+If you change the dependencies in the `pom.xml` do 
 
     mvn clean compile war:inplace
     touch $WILDFLY/standalone/deployments/my.war.dodeploy
+This will fully regenerate the `WEB-INF/lib` dir.
 
