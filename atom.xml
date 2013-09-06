@@ -4,7 +4,7 @@
   <title><![CDATA[rzymek.github.io]]></title>
   <link href="http://rzymek.github.io/atom.xml" rel="self"/>
   <link href="http://rzymek.github.io/"/>
-  <updated>2013-09-06T10:27:39+02:00</updated>
+  <updated>2013-09-06T13:20:52+02:00</updated>
   <id>http://rzymek.github.io/</id>
   <author>
     <name><![CDATA[Krzysztof Rzymkowski]]></name>
@@ -106,24 +106,6 @@ After changing Java sources do</p>
 <pre><code>mvn clean compile war:inplace
 touch $WILDFLY/standalone/deployments/my.war.dodeploy
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JBoss 7 hot deployent]]></title>
-    <link href="http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent/"/>
-    <updated>2013-09-04T14:29:00+02:00</updated>
-    <id>http://rzymek.github.io/blog/2013/09/04/jboss-7-hot-deployent</id>
-    <content type="html"><![CDATA[<p>JBoss 7 offers very fast redeployment. There are a few ways to trigger it.
-Let&rsquo;s say you want to redeploy <code>my.war</code></p>
-
-<h3>Redeploying using the filesystem</h3>
-
-<pre><code>cp my.war $JBOSS7/standalone/deployments/
-touch $JBOSS7/standalone/deployments/my.war.dodeploy
-</code></pre>
-
-<h3></h3>
 ]]></content>
   </entry>
   
