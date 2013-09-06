@@ -4,7 +4,11 @@
   <title><![CDATA[rzymek.github.io]]></title>
   <link href="http://rzymek.github.io/atom.xml" rel="self"/>
   <link href="http://rzymek.github.io/"/>
+<<<<<<< HEAD
   <updated>2013-09-06T10:23:57+02:00</updated>
+=======
+  <updated>2013-09-05T10:04:12+02:00</updated>
+>>>>>>> a43655a5ea77be07b847e395c178a21c490c38fb
   <id>http://rzymek.github.io/</id>
   <author>
     <name><![CDATA[Krzysztof Rzymkowski]]></name>
@@ -14,6 +18,7 @@
 
   
   <entry>
+<<<<<<< HEAD
     <title type="html"><![CDATA[Exploaded WAR with Maven and Eclipse]]></title>
     <link href="http://rzymek.github.io/blog/2013/09/05/exploaded-war/"/>
     <updated>2013-09-05T16:07:00+02:00</updated>
@@ -124,6 +129,13 @@ touch $JBOSS7/standalone/deployments/my.war.dodeploy
 </code></pre>
 
 <h3></h3>
+=======
+    <title type="html"><![CDATA[Wait for it...]]></title>
+    <link href="http://rzymek.github.io/blog/2013/09/05/wait-for-it-dot-dot-dot/"/>
+    <updated>2013-09-05T09:57:00+02:00</updated>
+    <id>http://rzymek.github.io/blog/2013/09/05/wait-for-it-dot-dot-dot</id>
+    <content type="html"><![CDATA[
+>>>>>>> a43655a5ea77be07b847e395c178a21c490c38fb
 ]]></content>
   </entry>
   
