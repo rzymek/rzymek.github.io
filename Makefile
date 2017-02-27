@@ -1,7 +1,12 @@
-.PHONY: deploy run
+.PHONY: deploy run hugo
+
+run: 
+	hugo server -w
 deploy:
 	rm -rf public/*
 	hugo 
 	cd public && git add :/ && git commit -am "publish" && git push origin master
-run:
-	hugo server -w
+hugo:
+	wget https://github.com/spf13/hugo/releases/download/v0.19/hugo_0.19-64bit.deb -O hugo.deb
+	sudo dpkg -i hugo.deb
+	rm hugo.deb
