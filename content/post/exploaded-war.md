@@ -1,7 +1,6 @@
 +++
 date = "2013-09-05T16:07:00+01:00"
 title = "Exploaded WAR with Maven and Eclipse"
-draft = true
 
 +++
 

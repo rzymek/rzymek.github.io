@@ -1,7 +1,6 @@
 +++
 date = "2017-02-27T21:53:31+01:00"
 title = "Markdown all the way"
-draft = true
 
 +++
 
