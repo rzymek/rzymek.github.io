@@ -12,6 +12,7 @@ So here's a list of all my makrdown tools.
 # [Marp](https://yhatt.github.io/marp/)
 
 ![](https://yhatt.github.io/marp/images/marp-screenshot.png)
+
 Let's me create slides in markdown. Clean and simple. Exports to PDF. 
 Works really well for prezentations that include code samples. Higlighting works out of the box.
 If you want to enforce specific language use:
@@ -34,5 +35,6 @@ Hugo is a breath of fresh air after them. Blog sources [contain](https://github.
 # [ReText](https://github.com/retext-project/retext)
 
 ![](https://camo.githubusercontent.com/5513bfe0e70a35ff7e34fcf6dc9a38827792761a/68747470733a2f2f612e6673646e2e636f6d2f636f6e2f6170702f70726f6a2f7265746578742f73637265656e73686f74732f7265746578742d6b6465352e706e67)
+
 Stangalone markdown editor with live preview. Just like the standard `gedit` editor, but with markdown preview.
 

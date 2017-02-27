@@ -1,4 +1,11 @@
 languageCode = "en-us"
 title = "rzymek's rumblings"
 baseURL = "https://rzymek.github.io/"
-theme = "hugo-robust"
+theme = "beautifulhugo"
+
+[Params]
+    logo = "img/rzymek.jpg"
+[Author]
+  name = "Krzysiek Rzymkowski"
+  email = "rzymek@gmail.com"
+  github = "rzymek"
