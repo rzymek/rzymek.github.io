@@ -3,6 +3,8 @@ title = "rzymek's rumblings"
 baseURL = "https://rzymek.github.io/"
 theme = "beautifulhugo"
 
+disqusShortname = "rzymek"
+
 [Params]
     logo = "img/rzymek.jpg"
 [Author]
