@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Markdown on rzymek&#39;s rumblings</title>
+    <link>https://rzymek.github.io/tags/markdown/</link>
+    <description>Recent content in Markdown on rzymek&#39;s rumblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>rzymek@gmail.com (Krzysiek Rzymkowski)</managingEditor>
+    <webMaster>rzymek@gmail.com (Krzysiek Rzymkowski)</webMaster>
+    <lastBuildDate>Mon, 27 Feb 2017 21:53:31 +0100</lastBuildDate>
+    
+	<atom:link href="https://rzymek.github.io/tags/markdown/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Markdown all the way</title>
+      <link>https://rzymek.github.io/post/markdown/</link>
+      <pubDate>Mon, 27 Feb 2017 21:53:31 +0100</pubDate>
+      <author>rzymek@gmail.com (Krzysiek Rzymkowski)</author>
+      <guid>https://rzymek.github.io/post/markdown/</guid>
+      <description>I love Markdown. It made me change my mind about writing documentations. Makes it almost pleasant.
+Now, whenever I&amp;rsquo;m about to write some content I first look for a tool that lets me do it in markdown. So here&amp;rsquo;s a list of all my makrdown tools.
+Marp Let&amp;rsquo;s me create slides in markdown. Clean and simple. Exports to PDF. Works really well for prezentations that include code samples. Higlighting works out of the box.</description>
+    </item>
+    
+  </channel>
+</rss>

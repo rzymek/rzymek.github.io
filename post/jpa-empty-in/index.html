@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Spring Data repository with empty IN clause. - rzymek&#39;s rumblings</title>
+  <meta property="og:title" content="Spring Data repository with empty IN clause." />
+  <meta name="twitter:title" content="Spring Data repository with empty IN clause." />
+  <meta name="description" content="The problem I&rsquo;ve stabled upon started with a spring data repository like this:
+public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{ @Query(&quot;select s from Sample s where s.id in :ids&quot;) List&lt;Sample&gt; queryIn(@Param(&quot;ids&quot;) List&lt;Integer&gt; ids); }  Actual query was of course more complicated that this. Complex enough to justify not using a query method. The problem emerges when you run this method with an empty collection as argument:
+repository.queryIn(Collections.emptyList());  The result is database dependent.">
+  <meta property="og:description" content="The problem I&rsquo;ve stabled upon started with a spring data repository like this:
+public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{ @Query(&quot;select s from Sample s where s.id in :ids&quot;) List&lt;Sample&gt; queryIn(@Param(&quot;ids&quot;) List&lt;Integer&gt; ids); }  Actual query was of course more complicated that this. Complex enough to justify not using a query method. The problem emerges when you run this method with an empty collection as argument:
+repository.queryIn(Collections.emptyList());  The result is database dependent.">
+  <meta name="twitter:description" content="The problem I&rsquo;ve stabled upon started with a spring data repository like this:
+public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{ @Query(&quot;select s from Sample …">
+  <meta name="author" content="Krzysiek Rzymkowski"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "rzymek&#39;s rumblings",
+    
+    "url": "https://rzymek.github.io/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https://rzymek.github.io/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://rzymek.github.io/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https://rzymek.github.io/post/jpa-empty-in/",
+          "name": "Spring data repository with empty i n clause."
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Krzysiek Rzymkowski"
+  },
+  "headline": "Spring Data repository with empty IN clause.",
+  "description" : "The problem I&amp;rsquo;ve stabled upon started with a spring data repository like this:
+public interface SampleRepository extends CrudRepository&amp;lt;Sample, Integer&amp;gt;{ @Query(&amp;quot;select s from Sample s where s.id in :ids&amp;quot;) List&amp;lt;Sample&amp;gt; queryIn(@Param(&amp;quot;ids&amp;quot;) List&amp;lt;Integer&amp;gt; ids); }  Actual query was of course more complicated that this. Complex enough to justify not using a query method. The problem emerges when you run this method with an empty collection as argument:
+repository.queryIn(Collections.emptyList());  The result is database dependent.",
+  "inLanguage" : "en",
+  "wordCount": 937,
+  "datePublished" : "2017-04-22T20:45:24",
+  "dateModified" : "2017-04-22T20:45:24",
+  "image" : "https://rzymek.github.io/img/rzymek.jpg",
+  "keywords" : [ "java, spring-boot, spring-data, sql, jpa" ],
+  "mainEntityOfPage" : "https://rzymek.github.io/post/jpa-empty-in/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https://rzymek.github.io/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https://rzymek.github.io/img/rzymek.jpg",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Spring Data repository with empty IN clause." />
+<meta property="og:description" content="The problem I&rsquo;ve stabled upon started with a spring data repository like this:
+public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{ @Query(&quot;select s from Sample s where s.id in :ids&quot;) List&lt;Sample&gt; queryIn(@Param(&quot;ids&quot;) List&lt;Integer&gt; ids); }  Actual query was of course more complicated that this. Complex enough to justify not using a query method. The problem emerges when you run this method with an empty collection as argument:
+repository.queryIn(Collections.emptyList());  The result is database dependent.">
+<meta property="og:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+<meta property="og:url" content="https://rzymek.github.io/post/jpa-empty-in/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="rzymek&#39;s rumblings" />
+  <meta name="twitter:title" content="Spring Data repository with empty IN clause." />
+  <meta name="twitter:description" content="The problem I&rsquo;ve stabled upon started with a spring data repository like this:
+public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{ @Query(&quot;select s from Sample …">
+  <meta name="twitter:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+  <meta name="twitter:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://rzymek.github.io/post/jpa-empty-in/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="rzymek&#39;s rumblings" />
+
+  <meta name="generator" content="Hugo 0.51" />
+  <link rel="alternate" href="https://rzymek.github.io/index.xml" type="application/rss+xml" title="rzymek&#39;s rumblings">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://rzymek.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://rzymek.github.io/css/syntax.css" /><link rel="stylesheet" href="https://rzymek.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54107063-5', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://rzymek.github.io/">rzymek&#39;s rumblings</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="About" href="https://gist.github.com/rzymek/571d5a54fe5f40515488">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="rzymek&#39;s rumblings" href="https://rzymek.github.io/">
+            <img class="avatar-img" src="https://rzymek.github.io/img/rzymek.jpg" alt="rzymek&#39;s rumblings" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Spring Data repository with empty IN clause.</h1>
+              
+              
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on April 22, 2017
+  
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Krzysiek Rzymkowski
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<p>The problem I&rsquo;ve stabled upon started with a <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.core-concepts">spring data repository</a> like this:</p>
+
+<pre><code class="language-java">public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{
+    @Query(&quot;select s from Sample s where s.id in :ids&quot;)
+    List&lt;Sample&gt; queryIn(@Param(&quot;ids&quot;) List&lt;Integer&gt; ids);
+}
+</code></pre>
+
+<p>Actual query was of course more complicated that this. Complex enough to justify not using a <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods">query method</a>.
+The problem emerges when you run this method with an empty collection as argument:</p>
+
+<pre><code class="language-java">repository.queryIn(Collections.emptyList());
+</code></pre>
+
+<p>The result is database dependent. There no problem on H2, but on HSQLDB (and also at least on MSSQL) you get:</p>
+
+<pre><code class="language-text">Caused by: org.hsqldb.HsqlException: unexpected token: )
+	at org.hsqldb.error.Error.parseError(Unknown Source)
+	at org.hsqldb.ParserBase.unexpectedToken(Unknown Source)
+	...
+</code></pre>
+
+<p>Syntax error in generated SQL query? How come? Lets first look at how <code>in</code> clause is handled by hibernate.
+Starting with a query that is run with a non-empty list parameter</p>
+
+<pre><code class="language-java">repository.queryIn(Arrays.asList(1, 2, 3));
+</code></pre>
+
+<p>the SQL generated by hibernate looks something like this</p>
+
+<pre><code class="language-sql">select
+    sample0_.id as id1_0_,
+    sample0_.name as name2_0_ 
+from
+    sample sample0_ 
+where
+    sample0_.id in (
+        ? , ? , ?
+    )
+</code></pre>
+
+<p>Turns out that hibernate can&rsquo;t pass an array directly to the <code>in</code> clause. It has to create a sql parameter for
+every entry in the collection.<br />
+Aha, so when the collection passed to the query is empty, the SQL becomes:</p>
+
+<pre><code class="language-sql">select
+    sample0_.id as id1_0_,
+    sample0_.name as name2_0_ 
+from
+    sample sample0_ 
+where
+    sample0_.id in ()
+</code></pre>
+
+<p>Here is where the syntax error comes in. The SQL standard does require at least one <a href="http://jakewheat.github.io/sql-overview/sql-2011-foundation-grammar.html#_8_4_in_predicate">value expression</a> between the parenthesis.
+So the closing bracket <code>)</code>, right after <code>(</code>, causes HSQLDB&rsquo;s SQL parser to throw a syntax error. Quite rightly though.</p>
+
+<h1 id="solutions">Solutions</h1>
+
+<p>First of all, let me point out, that a corresponding <code>find..In()</code>
+<a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods">query method</a>
+works fine for an empty
+parameter:</p>
+
+<pre><code class="language-java">public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;{
+    List&lt;Sample&gt; findByIdIn(List&lt;Integer&gt; ids);
+}
+</code></pre>
+
+<p>So the following test passes:</p>
+
+<pre><code class="language-java">@Test
+public void findByIdIn() {
+    List&lt;Sample&gt; result = repository.findByIdIn(Collections.emptyList());
+    assertThat(result, empty());
+}
+</code></pre>
+
+<p>But what to do, when the query is complex or would yeld a ridiculously long query method name like</p>
+
+<pre><code class="language-java">findByProduct_Category_EmployeeResponsible_Departament_Location_CityIn(
+   List&lt;City&gt; cities
+)
+</code></pre>
+
+<p>A custom <code>@Query</code> won&rsquo;t work, but there&rsquo;s another option.
+<a href="https://docs.oracle.com/javaee/6/tutorial/doc/gjitv.html">JPA Criteria API</a>. This is what
+<a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation">Spring Data JPA is actually using</a>
+under the hood to generate JPA queries from query methods.</p>
+
+<p>The bridge between Criteria API and Spring Data repositories is called
+<a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#specifications">Specifications</a>.
+First thing is to make your repository implement <code>JpaSpecificationExecutor&lt;T&gt;</code>:</p>
+
+<pre><code class="language-java">public interface SampleRepository extends 
+    CrudRepository&lt;Sample, Integer&gt;, 
+    JpaSpecificationExecutor&lt;Sample&gt;  {
+    
+    // ...
+    
+}
+</code></pre>
+
+<p>Now you can call <code>findAll(Specification&lt;T&gt;)</code> method on your repository:</p>
+
+<pre><code class="language-java">repository.findAll(new Specification&lt;Sample&gt;() {
+    @Override
+    public Predicate toPredicate(Root&lt;Sample&gt; root, 
+        CriteriaQuery&lt;?&gt; criteriaQuery, CriteriaBuilder criteriaBuilder) {
+        // ....
+    }
+})
+</code></pre>
+
+<p>Great! You get a place, where you can <em>dynamically</em> create any <code>WHERE</code> clause using Criteria API.</p>
+
+<p>The criteria corresponding to SQL&rsquo;s</p>
+
+<pre><code class="language-SQL">WHERE id IN (1,2,3)
+</code></pre>
+
+<p>is</p>
+
+<pre><code class="language-java">root.get(&quot;id&quot;).in(1,2,3);
+//or 
+List&lt;Integer&gt; ids = Arrays.asList(1,2,3);
+root.get(&quot;id&quot;).in(ids);
+</code></pre>
+
+<p>It&rsquo;s worth noting here, that most of the Criteria API tutorials use the type-safe generated
+<a href="https://docs.oracle.com/javaee/6/tutorial/doc/gjiup.html">Metamodel</a> classes.
+But it might be an overkill to set up persistence provider’s annotation processor just to handle a few queries.
+Most of your queries will probably be handled fine by Spring Data Query methods. Fortunately there&rsquo;s an option to
+use string&rsquo;s instead of Metamodel properties, like in the example above.</p>
+
+<p>Just using <code>root.get(&quot;id&quot;).in(ids)</code> will not save you from the possible SQL syntax error when <code>ids</code> are empty. But as
+the query is created dynamically, you have full control whether to include the <code>in()</code> statement or not.
+To mimic the spring&rsquo;s standard <code>find...In()</code> behaviour use this predicate:</p>
+
+<pre><code class="language-java">@Override
+public Predicate toPredicate(Root&lt;Sample&gt; root, 
+        CriteriaQuery&lt;?&gt; criteriaQuery, CriteriaBuilder criteriaBuilder) {
+    if (ids.isEmpty()) {
+        return criteriaBuilder.disjunction();
+    } else {
+        return root.get(&quot;id&quot;).in(ids);
+    }
+}
+</code></pre>
+
+<p>The mystic <code>disjunction()</code>
+is a simple clause that is always <code>FALSE</code>. The exact
+<a href="https://docs.oracle.com/javaee/6/api/javax/persistence/criteria/CriteriaBuilder.html#disjunction()">javadoc</a> states:</p>
+
+<blockquote>
+<p>Create a disjunction (with zero disjuncts). A disjunction with zero disjuncts is false.</p>
+</blockquote>
+
+<p>All right. It&rsquo;s a working solution, but it can be made less verbose when using Java 8. First step is the replace
+the anonymous class with a lambda:</p>
+
+<pre><code class="language-java">findAll((root, criteriaQuery, criteriaBuilder) -&gt; {
+    if (ids.isEmpty()) {
+        return criteriaBuilder.conjunction()
+    } else {
+        return root.get(&quot;id&quot;).in(ids);
+    }
+});
+</code></pre>
+
+<p>In this exact case it may be tempting to even use the conditional (<code>?:</code>) operator, so that the brackets (<code>{}</code>)
+and <code>return</code> can be omitted:</p>
+
+<pre><code class="language-java">findAll((root, criteriaQuery, criteriaBuilder) -&gt;
+    ids.isEmpty() ? criteriaBuilder.conjunction() : root.get(&quot;id&quot;).in(ids)
+);
+</code></pre>
+
+<p>The other thing is, that it would be nice to have this method available directly on the repository, not in some service
+class. Here, next new Java 8 feature come in handy - interface
+<a href="https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html">default methods</a>.</p>
+
+<pre><code class="language-java">import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.CrudRepository;
+
+import java.util.List;
+
+public interface SampleRepository extends CrudRepository&lt;Sample, Integer&gt;,
+    JpaSpecificationExecutor&lt;Sample&gt; {
+  
+  // ...
+ 
+  default List&lt;Sample&gt; findIn(List&lt;Integer&gt; ids) {
+    return findAll((root, criteriaQuery, criteriaBuilder) -&gt;
+      ids.isEmpty() 
+        ? criteriaBuilder.conjunction() 
+        : root.get(&quot;id&quot;).in(ids)
+    );
+  }
+}
+</code></pre>
+
+<p>New you can call this custom query method like any other repository method:</p>
+
+<pre><code class="language-java">
+@Test
+public void nonEmptySpecIn() {
+    List&lt;Integer&gt; ids = Arrays.asList(1, 2, 3);
+    List&lt;Sample&gt; result = repository.findIn(ids);
+    
+    assertThat(
+        result.stream()
+            .map(sample -&gt; sample.id)
+            .collect(toList()),
+        equalTo(ids)
+    );
+}
+</code></pre>
+
+<h2 id="select-all-on-empty-in">Select all on empty <code>IN</code></h2>
+
+<p>Common case with <code>IN</code> clauses is when you have a search filter like:</p>
+
+<blockquote>
+<p>Select categories:<br />
+[x] Home &amp; Garden<br />
+[ ] Beauty, Health &amp; Food<br />
+[ ] Sport &amp; Outdoors</p>
+</blockquote>
+
+<p>In this case, when the selected categories collection is empty, you want this filter to be ignored.<br />
+Having a predicate creation method, this change becomes trivial;</p>
+
+<pre><code class="language-java">default List&lt;Sample&gt; findIn(List&lt;Integer&gt; ids) {
+    return findAll((root, criteriaQuery, criteriaBuilder) -&gt; {
+        if (ids.isEmpty()) {
+            return null; // or criteriaBuilder.conjunction()
+        } else {
+            return root.get(&quot;id&quot;).in(ids);
+        }
+    });
+}
+</code></pre>
+
+<p>As for the <code>null</code> here. The <code>toPredicate()</code> documentation says that you are not allowed to return it here.
+But it turn out that <a href="https://jira.spring.io/browse/DATAJPA-300">spring data handles it</a> rather correctly.
+I&rsquo;ve placed a
+<a href="https://github.com/spring-projects/spring-data-jpa/pull/197">pull request</a> to update the javadoc.</p>
+
+<p>The complete sample code used in this article in <a href="https://github.com/rzymek/sandbox/tree/spring-boot-jpa-empty-in">available on
+github</a>.</p>
+
+
+        
+          <div class="blog-tags">
+            
+              <a href="https://rzymek.github.io//tags/java/">java</a>&nbsp;
+            
+              <a href="https://rzymek.github.io//tags/spring-boot/">spring-boot</a>&nbsp;
+            
+              <a href="https://rzymek.github.io//tags/spring-data/">spring-data</a>&nbsp;
+            
+              <a href="https://rzymek.github.io//tags/sql/">sql</a>&nbsp;
+            
+              <a href="https://rzymek.github.io//tags/jpa/">jpa</a>&nbsp;
+            
+          </div>
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://rzymek.github.io/post/markdown/" data-toggle="tooltip" data-placement="top" title="Markdown all the way">&larr; Previous Post</a>
+            </li>
+          
+          
+            <li class="next">
+              <a href="https://rzymek.github.io/post/what-is-docker/" data-toggle="tooltip" data-placement="top" title="What&#39;s so special about docker?">Next Post &rarr;</a>
+            </li>
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rzymek@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rzymek" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/krzysztof-rzymkowski" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/211205/rzymek" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Krzysiek Rzymkowski
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2018
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://rzymek.github.io/">rzymek&#39;s rumblings</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.51</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://rzymek.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://rzymek.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+

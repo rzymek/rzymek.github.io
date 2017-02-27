@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Wildfly on rzymek&#39;s rumblings</title>
+    <link>https://rzymek.github.io/tags/wildfly/</link>
+    <description>Recent content in Wildfly on rzymek&#39;s rumblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>rzymek@gmail.com (Krzysiek Rzymkowski)</managingEditor>
+    <webMaster>rzymek@gmail.com (Krzysiek Rzymkowski)</webMaster>
+    <lastBuildDate>Thu, 05 Sep 2013 16:07:00 +0100</lastBuildDate>
+    
+	<atom:link href="https://rzymek.github.io/tags/wildfly/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Exploaded WAR with Maven and Eclipse</title>
+      <link>https://rzymek.github.io/post/exploaded-war/</link>
+      <pubDate>Thu, 05 Sep 2013 16:07:00 +0100</pubDate>
+      <author>rzymek@gmail.com (Krzysiek Rzymkowski)</author>
+      <guid>https://rzymek.github.io/post/exploaded-war/</guid>
+      <description>The aim: setup a maven war project and JBoss7/WildFly so that the only thing needed to see your changes is touch my.war.dodeploy and F5 in the browser.
+Setting up Maven First thing to do is to setup outputDirectory, so that Eclipse will put the class files instantly in the right place:
+&amp;lt;project&amp;gt; &amp;lt;build&amp;gt; &amp;lt;outputDirectory&amp;gt;${basedir}/src/main/webapp/WEB-INF/classes&amp;lt;/outputDirectory&amp;gt; ...  Now you need to update Eclipse .project file:
+mvn eclipse:eclipse  If you haven&amp;rsquo;t done that already, now&amp;rsquo;s the time to do File &amp;gt; Import &amp;gt; Existing Projects into Workspace in Eclipse.</description>
+    </item>
+    
+  </channel>
+</rss>

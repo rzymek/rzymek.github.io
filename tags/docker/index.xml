@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on rzymek&#39;s rumblings</title>
+    <link>https://rzymek.github.io/tags/docker/</link>
+    <description>Recent content in Docker on rzymek&#39;s rumblings</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <managingEditor>rzymek@gmail.com (Krzysiek Rzymkowski)</managingEditor>
+    <webMaster>rzymek@gmail.com (Krzysiek Rzymkowski)</webMaster>
+    <lastBuildDate>Fri, 16 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://rzymek.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Simplest Docker service</title>
+      <link>https://rzymek.github.io/post/simple-docker-service/</link>
+      <pubDate>Fri, 16 Nov 2018 00:00:00 +0000</pubDate>
+      <author>rzymek@gmail.com (Krzysiek Rzymkowski)</author>
+      <guid>https://rzymek.github.io/post/simple-docker-service/</guid>
+      <description>The Simplest Docker service My first thought when wanting to run a docker container as a system service, was to use docker service. Like this
+ docker service create --name nginx -p 80:80 \ --mount type=bind,source=/var/www,destination=/usr/share/nginx/html \ nginx  But this is sometimes an overkill. In case on nginx a much simpler solution would be
+docker run --detach --network host \ --restart=always \ -v /var/www:/usr/share/nginx/html:ro \ nginx  It&amp;rsquo;s the way to go, when you just what to have one instance on one specific host.</description>
+    </item>
+    
+    <item>
+      <title>Prevent docker from filling up your disk</title>
+      <link>https://rzymek.github.io/post/docker-prune/</link>
+      <pubDate>Fri, 30 Mar 2018 00:00:00 +0000</pubDate>
+      <author>rzymek@gmail.com (Krzysiek Rzymkowski)</author>
+      <guid>https://rzymek.github.io/post/docker-prune/</guid>
+      <description>Deploying docker container as part of your continuous integration can cause your disk to fill up pretty quick. Docker does reuse the layers that did not change between deployments. But still, that last layer with you .war or .js bundle can take a few hundred megabytes. Taking into account, that you should be deploying a new version of every update of the master branch, this can take up a gigabyte every day.</description>
+    </item>
+    
+  </channel>
+</rss>

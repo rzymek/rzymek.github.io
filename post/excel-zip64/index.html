@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Excel and ZIP64 - rzymek&#39;s rumblings</title>
+  <meta property="og:title" content="Excel and ZIP64" />
+  <meta name="twitter:title" content="Excel and ZIP64" />
+  <meta name="description" content="Deep dive into ZIP file format in the context of .xlsx">
+  <meta property="og:description" content="Deep dive into ZIP file format in the context of .xlsx">
+  <meta name="twitter:description" content="Deep dive into ZIP file format in the context of .xlsx">
+  <meta name="author" content="Krzysiek Rzymkowski"/><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "rzymek&#39;s rumblings",
+    
+    "url": "https://rzymek.github.io/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https://rzymek.github.io/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https://rzymek.github.io/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https://rzymek.github.io/post/excel-zip64/",
+          "name": "Excel and z i p64"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Krzysiek Rzymkowski"
+  },
+  "headline": "Excel and ZIP64",
+  "description" : "TL;DR; Excel has requires specific ZIP flag values in .xlsx that Java&amp;rsquo;s ZIP implementation does not provide when streaming.
+Problem with huge XLSX files The standard in Excel file creation in Java is Apache POI. It works fine, a bit slow, but still fine. As it turns out up to some size limit, arbitrary at first sight. You can try it yourself. Just run this piece of code:
+try (SXSSFWorkbook wb = new SXSSFWorkbook(new XSSFWorkbook())) { SXSSFSheet sheet = wb.",
+  "inLanguage" : "en",
+  "wordCount": 1996,
+  "datePublished" : "2018-12-03T00:00:00",
+  "dateModified" : "2018-12-03T00:00:00",
+  "image" : "https://rzymek.github.io/img/rzymek.jpg",
+  "keywords" : [ "" ],
+  "mainEntityOfPage" : "https://rzymek.github.io/post/excel-zip64/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https://rzymek.github.io/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https://rzymek.github.io/img/rzymek.jpg",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:title" content="Excel and ZIP64" />
+<meta property="og:description" content="Deep dive into ZIP file format in the context of .xlsx">
+<meta property="og:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+<meta property="og:url" content="https://rzymek.github.io/post/excel-zip64/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="rzymek&#39;s rumblings" />
+  <meta name="twitter:title" content="Excel and ZIP64" />
+  <meta name="twitter:description" content="Deep dive into ZIP file format in the context of .xlsx">
+  <meta name="twitter:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+  <meta name="twitter:image" content="https://rzymek.github.io/img/rzymek.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:url" content="https://rzymek.github.io/post/excel-zip64/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="rzymek&#39;s rumblings" />
+
+  <meta name="generator" content="Hugo 0.51" />
+  <link rel="alternate" href="https://rzymek.github.io/index.xml" type="application/rss+xml" title="rzymek&#39;s rumblings">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://rzymek.github.io/css/main.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" /><link rel="stylesheet" href="https://rzymek.github.io/css/syntax.css" /><link rel="stylesheet" href="https://rzymek.github.io/css/codeblock.css" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.css" integrity="sha384-h/L2W9KefUClHWaty3SLE5F/qvc4djlyR4qY3NUV5HGQBBW7stbcfff1+I/vmsHh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/default-skin/default-skin.min.css" integrity="sha384-iD0dNku6PYSIQLyfTOpB06F2KCZJAKLOThS5HRe8b3ibhdEQ6eKsFf/EeFxdOt5R" crossorigin="anonymous">
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-54107063-5', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://rzymek.github.io/">rzymek&#39;s rumblings</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        
+          
+            <li>
+              <a title="About" href="https://gist.github.com/rzymek/571d5a54fe5f40515488">About</a>
+            </li>
+          
+        
+
+        
+
+        
+      </ul>
+    </div>
+
+    
+      <div class="avatar-container">
+        <div class="avatar-img-border">
+          <a title="rzymek&#39;s rumblings" href="https://rzymek.github.io/">
+            <img class="avatar-img" src="https://rzymek.github.io/img/rzymek.jpg" alt="rzymek&#39;s rumblings" />
+          </a>
+        </div>
+      </div>
+    
+
+  </div>
+</nav>
+
+
+
+
+    
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+<div class="pswp__bg"></div>
+
+<div class="pswp__scroll-wrap">
+    
+    <div class="pswp__container">
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+      <div class="pswp__item"></div>
+    </div>
+    
+    <div class="pswp__ui pswp__ui--hidden">
+    <div class="pswp__top-bar">
+      
+      <div class="pswp__counter"></div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+      <button class="pswp__button pswp__button--share" title="Share"></button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+      
+      
+      <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+          <div class="pswp__preloader__cut">
+            <div class="pswp__preloader__donut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip"></div>
+    </div>
+    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+    </button>
+    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+    </button>
+    <div class="pswp__caption">
+      <div class="pswp__caption__center"></div>
+    </div>
+    </div>
+    </div>
+</div>
+
+
+  
+  
+  
+
+
+
+
+
+
+  
+
+  <header class="header-section ">
+    
+    <div class="intro-header no-img">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <div class="post-heading">
+              
+                <h1>Excel and ZIP64</h1>
+              
+              
+              
+                
+                  <h2 class="post-subheading">Deep dive into ZIP file format in the context of .xlsx</h2>
+                
+              
+              
+                <span class="post-meta">
+  
+  
+  <i class="fas fa-calendar"></i>&nbsp;Posted on December 3, 2018
+  
+  
+  
+  
+    &nbsp;|&nbsp;<i class="fas fa-user"></i>&nbsp;Krzysiek Rzymkowski
+  
+  
+</span>
+
+
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      <article role="main" class="blog-post">
+        
+
+<p><strong>TL;DR;</strong> Excel has requires specific ZIP flag values in <code>.xlsx</code> that Java&rsquo;s ZIP implementation
+does not provide when streaming.</p>
+
+<h1 id="problem-with-huge-xlsx-files">Problem with huge XLSX files</h1>
+
+<p>The standard in Excel file creation in Java is <a href="http://poi.apache.org/">Apache POI</a>.
+It works fine, a bit slow, but still fine. As it turns out up to some size limit, arbitrary
+at first sight. You can try it yourself. Just run this piece of code:</p>
+
+<pre><code>try (SXSSFWorkbook wb = new SXSSFWorkbook(new XSSFWorkbook())) {
+  SXSSFSheet sheet = wb.createSheet();
+  for (int rowIdx = 0; rowIdx &lt; 1_000_000; rowIdx++) {
+    SXSSFRow row = sheet.createRow(rowIdx);
+    for (int colIdx = 0; colIdx &lt; 100; colIdx++) {
+      row.createCell(colIdx).setCellValue(1000 * rowIdx + colIdx);
+    }
+  }
+  try (OutputStream out = new FileOutputStream(&quot;big.xlsx&quot;)) {
+    wb.write(out);
+  }
+}
+</code></pre>
+
+<p><a href="https://support.office.com/en-us/article/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3">Excel can handle</a> up to 1,048,576 rows by 16,384 columns, so this is well within the limit.</p>
+
+<p>Try to open the resulting <code>big.xlsx</code> file in Excel. It will almost instantly
+pop up this dialog:</p>
+
+<p><img src="/img/excel-zip64/excel-repair.png" alt="excel" /></p>
+
+<p>Let it repair it. It will take a few minutes now. After that all the rows and cells will be there.
+You can save it and it will open fine from now on.
+So, what&rsquo;s the problem?</p>
+
+<p>You may already know, xlsx files are just zip archived.
+Unpack the repaired xlsx file. You&rsquo;ll find a bunch on XML files inside:</p>
+
+<pre><code>[Content_Types].xml
+docProps/app.xml
+docProps/core.xml
+_rels/.rels
+xl/workbook.xml
+xl/_rels/workbook.xml.rels
+xl/sharedStrings.xml
+xl/styles.xml
+xl/worksheets/sheet1.xml
+</code></pre>
+
+<p>Lets take those files and re-compress then with Java. Here&rsquo;s the code:</p>
+
+<pre><code>List&lt;String&gt; paths = Arrays.asList(
+  &quot;[Content_Types].xml&quot;,
+  &quot;_rels/.rels&quot;,
+  &quot;docProps/app.xml&quot;,
+  &quot;docProps/core.xml&quot;,
+  &quot;xl/styles.xml&quot;,
+  &quot;xl/workbook.xml&quot;,
+  &quot;xl/_rels/workbook.xml.rels&quot;,
+  &quot;xl/worksheets/sheet1.xml&quot;
+);
+try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(&quot;repackaged.xlsx&quot;))) {
+    for (String path : paths) {
+        out.putNextEntry(new ZipEntry(path));
+        Files.copy(Paths.get(&quot;big&quot;,path), out);
+        out.closeEntry();
+    }
+}
+</code></pre>
+
+<p>Now it gets really interesting. The <code>repackaged.xlsx</code> file causes Excel to pop up the repair dialog as well!
+It&rsquo;s not a problem with the XMLs or Apache POI. It&rsquo;s a problem with the ZIP format. Excel must have some
+specific expectations, which <code>java.util.zip</code> does not fullfil. Obviously the files opens (and passes test) just
+fine in every other zip tool I tried. The list included standard Linux zip cli
+ (v3.0, by Info-ZIP), 7z (v16.02 Linux and v17.01 Windows), Windows 10 Explorer.</p>
+
+<p><img src="/img/excel-zip64/test-ok.png" alt="" /></p>
+
+<p>I dug a bit deeper. Apache POI actually does not use the zip implementation provided with JDK.
+It uses <a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
+A fully independent implementation. I&rsquo;ll spare you the code, but compressing the XMLs with it does not
+solve the problem either. Excel wants to repair that one also.</p>
+
+<p>So, I went down the rabbit whole. I took a handy <a href="http://www.wxhexeditor.org/">hex editor</a>,
+a copy of the <a href="https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT">ZIP specification</a>
+and went to implement my own ZIP format that <em>will</em> be consumed by Excel.</p>
+
+<h2 id="possible-source-of-the-problem">Possible source of the problem</h2>
+
+<p>Smaller xlsx files generated with Apache POI obviously open correctly in Excel. Well, duh. Thousands of
+developers are using it. It turns out not many of them are generating files that big.
+I found a few bugs in the Apache POI bugzilla that describe this exact issue. They are</p>
+
+<ul>
+<li><a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=54523">54523</a> from <strong>2013</strong>-02-05 (!)</li>
+<li><a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=57342">57342</a> from <strong>2014</strong>-12-11 (!)</li>
+<li><a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=61832">61832</a> from 2017-11-29.</li>
+</ul>
+
+<p>Both are unresolved. &ldquo;Status: NEW&rdquo;.</p>
+
+<p>The problem starts when any inner xml file&rsquo;s size exceeds 4GB.
+Let&rsquo;s see what this this particular size mark has to do with ZIP internals.</p>
+
+<h2 id="4gb-in-zip">4GB in ZIP</h2>
+
+<p>Standard ZIP format has 4 bytes reserved for file size. The maximum is therefore <code>0xFFFF FFFF</code> or <code>256^4-1</code>, <code>2^32-1</code>.
+In other words (numbers) its <code>4_294_967_295</code>, that is 4GB minus 1 byte.  An unimaginably huge size in 1989 when the first PKZIP spec was published. Not that big now. The internal <code>sheet1.xml</code> file will break the <code>4GB</code> limit at about 1 million rows with 100 columns - with number cell only. Excel handles this amount of data surprisingly well. At least on by 32GB RAM machine.</p>
+
+<p>As you might have guested, the <code>4GB</code> limit in ZIP files was overcome years ago. In 2001 actually, in the version 4.5 of the PKZIP specification. With the introduction of ZIP64 extension.</p>
+
+<p>This is sufficient to handle file sizes up to <code>18_446_744_073_709_551_615</code> bytes or <code>2^64−1</code> bytes, 16 EiB minus 1 byte.</p>
+
+<p>But is turns out Excel is quite strict when it comes to ZIP64 extension.</p>
+
+<h3 id="zip-file-structure">Zip file structure</h3>
+
+<p>Let&rsquo;s first look a at standard zip file structure:</p>
+
+<pre><code> +============+     
+ | LFH-1      |   - Local file header for file 1
+ +------------+
+ | Compressed |   - Usually using deflate compression
+ | file 1     |
+ | data       |
+ +------------+
+ | EXT-1      |   - Data descriptor (optional), contains crc and file size
+ +============+     
+ | LFH-2      |   
+ +------------+
+ | Compressed |   
+ | file 2     |
+ | data       |
+ +------------+
+ | EXT-2      |   
+ +============+     
+ | LFH-3      |   
+ +------------+
+ | ...        |   
+ |
+
+              |
+ |        ... |
+ +------------+
+ | EXT-n      |   
+ +============+     
+ | CEN-1      |   - Central directory entry, one for every file, 
+ +------------+     points to each corresponding LFH offset
+ | CEN-2      |
+ +------------+
+ | ...        | 
+ +------------+
+ | CEN-n      |
+ +============+     
+ | END        |   - End of zip header, points to CEN-1 offset
+ +------------+
+</code></pre>
+
+<p>I&rsquo;m going to focus on streaming zip creation. That is compressing data that is
+generated on the fly and not known in advance. The output will also be streamed, like over a socket.
+No going back. No seeking to add some info to a LFH.</p>
+
+<p>Zip does fully support this. There are field to store size, crc and compressed size in LFH, but they can be filled with zeros.</p>
+
+<p>Let&rsquo;s look closely at a zip format Excel fully accepts.</p>
+
+<h3 id="local-file-header-lfh">Local file header (LFH)</h3>
+
+<p>First the complete LFH - Local File Header:</p>
+
+<pre><code> 50 4B 03 04 2D 00 08 00 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+|-----------|-----|-----|-----|-----------|-----------|-----------|-----------|
+ 'PK\03\04'   |   flags   |   time &amp; date    CRC-32        |     uncompressed  
+ LFH          |           |                           compressed     size      
+ signature    |     compression                         size                
+              |       method                                                
+           version                                                          
+           2D = 45                                                          
+</code></pre>
+
+<pre><code>... 18 00 00 00 78 6C 2F 77 6F 72 6B 73 68 65 65 74 73 2F 73 68 65 65 74 31 2E 78 6D 6C 
+   |-----|-----|-----------------------------------------------------------------------|
+      |     |      filename ('xl/worksheets/sheet1.xml')
+ filename   |      24 bytes (0x18) in this case
+ length     |
+          extra field length
+</code></pre>
+
+<p>Version <code>0x2D</code> = <code>45</code> is interpreted as 4.5. This is the ZIP specification version where ZIP64 extension was introduced.
+This looks to be critically important to Excel. It will open files with zip version 2.0 just fine, as long as
+file size does not exceed 4GB. So, during streaming xlsx creation, if there&rsquo;s just a possibility that that the 32bit
+limit could be exceeded, version 4.5 must be put here in the LFH.
+Flag value <code>0x0008</code> (<a href="https://en.wikipedia.org/wiki/Little-endian">little-endian</a>) means that the bit at offset 3 is set.
+This bit is a marker that Data Descriptor (EXT) will be written after the file data.
+Compression method <code>0x0008</code> means <a href="https://en.wikipedia.org/wiki/DEFLATE">DEFLATE</a>.</p>
+
+<pre><code>void writeLFH(ZipEntry entry) throws IOException {
+  writeInt(0x04034b50L);                        // &quot;PK\003\004&quot;
+  writeShort(45);                               // version required: 4.5
+  writeShort(8);                                // flags: 8 = data descriptor used
+  writeShort(8);                                // compression method: 8 = deflate
+  writeInt(0);                                  // file modification time &amp; date 
+  writeInt(entry.crc);                          // CRC-32
+  writeInt(0);                                  // compressed file size
+  writeInt(0);                                  // uncompressed file size
+  writeShort(entry.filename.length());          // filename length
+  writeShort(0);                                // extra flags size
+  out.write(entry.filename.getBytes(US_ASCII)); // filename characters
+}
+</code></pre>
+
+<p>After the header comes actual compressed file data. When reimplementing the zip format (to match Excel expectations)
+I just used <a href="https://docs.oracle.com/javase/8/docs/api/java/util/zip/DeflaterOutputStream.html">java.util.zip.DeflaterOutputStream</a>. Actually I did extended it to add functionality to record CRC and to wrap it in <code>BufferedOutputStream</code>. Turns out if you don&rsquo;t feed <code>DeflaterOutputStream</code> in chunks of about <code>4096</code> bytes it becomes really slow. Like <em>three times slower</em>. I did stumble upon this observation while browsing through
+<a href="https://github.com/apache/commons-compress/blob/c03704d773dfa0dfc5b2e53b4c198a95d0213ca0/src/main/java/org/apache/commons/compress/archivers/zip/StreamCompressor.java#L42"><code>commons-compress</code> sources</a>:</p>
+
+<pre><code>/*
+ * Apparently Deflater.setInput gets slowed down a lot on Sun JVMs
+ * when it gets handed a really big buffer.  See
+ * https://issues.apache.org/bugzilla/show_bug.cgi?id=45396
+ *
+ * Using a buffer size of 8 kB proved to be a good compromise
+ */
+</code></pre>
+
+<h3 id="data-descriptor">Data descriptor</h3>
+
+<p>Getting back to ZIP structure. After compressed file data comes the optional <em>Data Descriptor</em> (EXT) header. It contains CRC, size and compressed size. Initially 4 bytes were reserved for each of these values. ZIP specification 4.5 is used, the compressed and uncompressed sizes are 8 bytes each.</p>
+
+<pre><code> 50 4B 07 08 73 B9 D9 10 06 66 30 21 00 00 00 00 9A 90 DC 15 01 00 00 00
+|-----------|-----------|-----------------------|-----------------------|
+ 'PK\07\08'    CRC-32    compressed size          uncompressed size
+                          0x21 30 66 06 =          0x01 15 DC 90 9A =
+                          556819974 bytes (532mb)  4661743770 bytes (4,4GiB)
+</code></pre>
+
+<pre><code>void writeEXT(ZipEntry entry) throws IOException {
+  writeInt(0x08074b50L);           // data descriptor signature &quot;PK\007\008&quot;
+  writeInt(entry.crc);             // crc-32
+  writeLong(entry.compressedSize); // compressed size (zip64)
+  writeLong(entry.size);           // uncompressed size (zip64)
+}
+</code></pre>
+
+<p>This is repeated for every file.</p>
+
+<h3 id="central-directory">Central directory</h3>
+
+<p>After all the files comes the <em>Central Directory</em>. Here for every file comes a structure very similar to local file header.
+Seems Excel really focuses on LFH and is not that strict with central directory. Nevertheless here&rsquo;s an example and implementation
+that will just work.</p>
+
+<pre><code> 50 4B 01 02 2D 00 2D 00 08 00 08 00 00 00 00 00 73 B9 D9 10 06 66 30 21 FF FF FF FF ...
+|-----------|-----|-----|-----|-----|-----------|-----------|-----------|-----------| 
+ 'PK\01\02'    |     |      |    |    time &amp; date    CRC-32        |     uncompressed  
+         version  version   | compression                     compressed     size      
+         made by  required  |                                    size                
+                          flag  
+</code></pre>
+
+<pre><code>... 18 00 0C 00 00 00 00 00 00 00 00 00 00 00 C4 08 00 00 ...
+   |-----|-----|-----|-----|-----------------|-----------| 
+      |     |    |      |    file attributes   LFH offset
+ filename   |  comment  |    
+ length     |  length   |
+          extra       file 
+          field       start
+          length      disk 
+
+</code></pre>
+
+<pre><code>... 78 6C 2F 77 6F 72 6B 73 68 65 65 74 73 2F 73 68 65 65 74 31 2E 78 6D 6C ...
+   |-----------------------------------------------------------------------|
+     filename ('xl/worksheets/sheet1.xml')
+     24 bytes (0x18) in this case
+</code></pre>
+
+<pre><code>
+At the end of the entry comes ZIP64 section foretold by `0x0C00` in extra field length field. 
+
+... 01 00 08 00 9A 90 DC 15 01 00 00 00 
+   |-----|-----|-----------------------|
+    ZIP64    |      uncompressed size
+    field    |
+   signature |
+             |
+         field
+          size    
+</code></pre>
+
+<pre><code>void writeCEN(ZipEntry entry) throws IOException {
+  boolean useZip64 = entry.size &gt; 0xffffffffL;
+  writeInt(0x02014b50L);                         // &quot;PK\001\002&quot;
+  writeShort(45);                                // version made by: 4.5
+  writeShort(45);                                // version required: 4.5
+  writeShort(8);                                 // flags: 8 = data descriptor used
+  writeShort(8);                                 // compression method: 8 = deflate
+  writeInt(0);                                   // file modification time &amp; date 
+  writeInt(entry.crc);                           // CRC-32
+  writeInt(entry.compressedSize);                // compressed size
+  writeInt(useZip64 ? 0xffffffffL : entry.size); // uncompressed size 
+  writeShort(entry.filename.length());           // filename length
+  writeShort(useZip64 
+    ? (2 + 2 + 8)  /* short + short + long*/
+    : 0);                                        // extra field len
+  writeShort(0);                                 // comment length
+  writeShort(0);                                 // disk number where file starts 
+  writeShort(0);                                 // internal file attributes (unused)
+  writeInt(0);                                   // external file attributes (unused)
+  writeInt(entry.offset);                        // LFH offset
+  out.write(entry.filename.getBytes(US_ASCII));  // filename characters
+  // Extra field:
+  writeShort(0x0001);                            // ZIP64 field signature
+  writeShort(8);                                 // size of extra field (below)
+  writeLong(entry.size);                         // uncompressed size
+}
+</code></pre>
+
+<p>Excel actually seems to <strong>ignore</strong> flag value here. LFH takes precedence.
+Files open fine irrespectively if flag value is 0 or 8 here.
+But in LFH, the flag value <strong>must</strong> be 8 is ZIP64 is used.</p>
+
+<h3 id="end-of-central-directory-record">End of central directory record</h3>
+
+<p>Nothing out of the ordinary here as well. Standard stuff:</p>
+
+<pre><code> 50 4B 05 06 00 00 00 00 08 00 08 00 09 02 00 00 18 6F 30 21 00 00
+|-----------|-----|-----|-----|-----|-----------|-----------|-----|
+  END sig      |      |     |    |            |   CEN offset   |
+               |      |     |   total number  |                |
+          disk number |     |   of entries    |      archive comment
+                      |     |                 |      length
+                disk number |        size of CEN
+             containing CEN |        in bytes
+                            |
+             number of entries
+             on this disk
+
+</code></pre>
+
+<p>CEN offset is the byte number at which the central directory structure starts.
+<!--
+As you can see, zip allows for fast access to list of files in the archive as well as
+specific file data. Without scanning through the whole archive. As long as 
+seeking (jumping around) is possible. 
+--></p>
+
+<pre><code>void writeEND(int entriesCount, int offset, int length) throws IOException {
+  writeInt(0x06054b50L);    // &quot;PK\005\006&quot;
+  writeShort(0);            // number of this disk
+  writeShort(0);            // central directory start disk
+  writeShort(entriesCount); // number of directory entries on disk
+  writeShort(entriesCount); // total number of directory entries
+  writeInt(length);         // length of central directory
+  writeInt(offset);         // offset of central directory
+  writeShort(0);            // comment length
+}
+</code></pre>
+
+<h2 id="conclusions">Conclusions</h2>
+
+<p>It seems critical to Excel that the zip specification version is 4.5 in Local File Header if ZIP64 is used anywhere
+with this zip entry (Central directory file header or Data descriptor).</p>
+
+
+        
+
+        
+
+        
+      </article>
+
+      
+        <ul class="pager blog-pager">
+          
+            <li class="previous">
+              <a href="https://rzymek.github.io/post/simple-docker-service/" data-toggle="tooltip" data-placement="top" title="Simplest Docker service">&larr; Previous Post</a>
+            </li>
+          
+          
+        </ul>
+      
+
+
+      
+
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+              <li>
+                <a href="mailto:rzymek@gmail.com" title="Email me">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/rzymek" title="GitHub">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/krzysztof-rzymkowski" title="LinkedIn">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a href="https://stackoverflow.com/users/211205/rzymek" title="StackOverflow">
+                  <span class="fa-stack fa-lg">
+                    <i class="fas fa-circle fa-stack-2x"></i>
+                    <i class="fab fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                  </span>
+                </a>
+              </li>
+          
+        </ul>
+        <p class="credits copyright text-muted">
+          
+            
+              Krzysiek Rzymkowski
+            
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+            2018
+          
+
+          
+            &nbsp;&bull;&nbsp;
+            <a href="https://rzymek.github.io/">rzymek&#39;s rumblings</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          <a href="http://gohugo.io">Hugo v0.51</a> powered &nbsp;&bull;&nbsp; Theme by <a href="http://deanattali.com/beautiful-jekyll/">Beautiful Jekyll</a> adapted to <a href="https://github.com/halogenica/beautifulhugo">Beautiful Hugo</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://rzymek.github.io/js/main.js"></script><script> renderMathInElement(document.body); </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe.min.js" integrity="sha384-QELNnmcmU8IR9ZAykt67vGr9/rZJdHbiWi64V88fCPaOohUlHCqUD/unNN0BXSqy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.2/photoswipe-ui-default.min.js" integrity="sha384-m67o7SkQ1ALzKZIFh4CiTA8tmadaujiTa9Vu+nqPSwDOqHrDmxLezTdFln8077+q" crossorigin="anonymous"></script>
+<script src="https://rzymek.github.io/js/load-photoswipe.js"></script>
+
+
+
+
+
+
+
+
+  </body>
+</html>
+
