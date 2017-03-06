@@ -1,7 +1,7 @@
 .PHONY: deploy run hugo
 
 run: 
-	hugo server -w
+	hugo server --watch --buildDrafts
 deploy:
 	rm -rf public/*
 	hugo 
