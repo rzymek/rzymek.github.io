@@ -2,6 +2,9 @@
 
 run: 
 	hugo server --watch --buildDrafts
+new:
+	@read -p "Post file name: " name;\
+	hugo new post/$$name.md
 deploy:
 	rm -rf public/*
 	hugo 
