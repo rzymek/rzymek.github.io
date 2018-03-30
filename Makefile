@@ -1,7 +1,9 @@
 .PHONY: deploy run hugo
 
 run: 
-	hugo server --watch #--buildDrafts
+	hugo server --watch --buildDrafts
+preview:
+	hugo server --watch
 new:
 	@read -p "Post file name: " name;\
 	hugo new post/$$name.md
