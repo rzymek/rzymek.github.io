@@ -4,14 +4,15 @@ baseURL = "https://rzymek.github.io/"
 theme = "beautifulhugo"
 
 disqusShortname = "rzymek"
+googleAnalytics = "UA-54107063-5"
 
 [Params]
-    logo = "img/rzymek.jpg"
+  logo = "img/rzymek.jpg"
 [Author]
   name = "Krzysiek Rzymkowski"
   email = "rzymek@gmail.com"
   github = "rzymek"
   stackoverflow = "users/211205/rzymek"
 [[menu.main]]
-    name = "About"
-    url = "https://gist.github.com/rzymek/571d5a54fe5f40515488"
+  name = "About"
+  url = "https://gist.github.com/rzymek/571d5a54fe5f40515488"
