@@ -1,9 +1,8 @@
-+++
-date = "2018-03-30"
-subtitle = "Quick tip"
-title = "Prevent docker from filling up your disk"
-
-+++
+---
+date: "2018-03-30"
+title: "Prevent docker from filling up your disk"
+tags: ['docker','cron']
+---
 
 Deploying docker container as part of your continuous integration can cause your disk to fill up pretty quick.
 Docker does reuse the layers that did not change between deployments. But still, that last layer with you `.war` or `.js` bundle can take a few hundred megabytes.

@@ -1,9 +1,9 @@
-+++
-date = "2017-04-22T20:45:24+02:00"
-title = "Spring Data repository with empty IN clause."
-draft = false
-
-+++
+---
+date: "2017-04-22T20:45:24+02:00"
+title: "Spring Data repository with empty IN clause."
+draft: false
+tags: ['java','spring-boot','spring-data','sql','jpa']
+---
 
 The problem I've stabled upon started with a [spring data repository]
 (https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.core-concepts) like this:

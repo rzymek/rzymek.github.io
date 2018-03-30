@@ -1,8 +1,8 @@
-+++
-date = "2013-09-05T16:07:00+01:00"
-title = "Exploaded WAR with Maven and Eclipse"
-
-+++
+---
+date: "2013-09-05T16:07:00+01:00"
+title: "Exploaded WAR with Maven and Eclipse"
+tags: ['java','wildfly','jboss','maven', 'eclipse']
+---
 
 
 The aim: setup a maven war project and JBoss7/WildFly so that the only thing needed to see your changes is `touch my.war.dodeploy` and `F5` in the browser.
