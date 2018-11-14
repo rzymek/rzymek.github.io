@@ -2,7 +2,6 @@ languageCode = "en-us"
 title = "rzymek's rumblings"
 baseURL = "https://rzymek.github.io/"
 theme = "beautifulhugo"
-#theme = "hugo-theme-massively"
 
 disqusShortname = "rzymek"
 googleAnalytics = "UA-54107063-5"
