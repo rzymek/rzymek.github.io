@@ -3,6 +3,7 @@ bigimg = ""
 date = "2018-11-14T21:31:32+01:00"
 subtitle = ""
 title = "excel zip64"
+draft = true
 
 +++
 
