@@ -17,6 +17,7 @@ googleAnalytics = "UA-54107063-5"
   email = "rzymek@gmail.com"
   github = "rzymek"
   stackoverflow = "users/211205/rzymek"
+  linkedin = "krzysztof-rzymkowski"
 [[menu.main]]
   name = "About"
   url = "https://gist.github.com/rzymek/571d5a54fe5f40515488"
