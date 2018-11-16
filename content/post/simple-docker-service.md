@@ -1,13 +1,12 @@
-+++
-date = "2018-01-04T21:02:12+01:00"
-title = "Simplest Docker service"
-draft = true
-
-+++
+---
+date: "2018-11-16"
+title: "Simplest Docker service"
+tags: ['docker']
+---
 
 # The Simplest Docker service
 
-My first though when wanting to run a docker container as a system service, was to use `docker service`.
+My first thought when wanting to run a docker container as a system service, was to use `docker service`.
 Like this
 
      docker service create --name nginx -p 80:80 \
@@ -21,6 +20,9 @@ But this is sometimes an overkill. In case on `nginx` a much simpler solution wo
         -v /var/www:/usr/share/nginx/html:ro \
         nginx
 
-For simple scenario the are a few benefits. It's the way to go, when you just what to have one instance on one specific host.
+It's the way to go, when you just what to have one instance on one specific host.
+The container will be started after **system reboot** - it will always
+start on docker daemon startup.  
+Just remember to enable docker on system boot with:
 
-https://docs.docker.com/engine/reference/run/#restart-policies-restart
+    systemctl enable docker
