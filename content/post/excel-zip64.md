@@ -99,3 +99,10 @@ Version `0x2D` = `45` is interpreted as 4.5. This is the ZIP specification versi
 Flag value `0x0008` ([little-endian](https://en.wikipedia.org/wiki/Little-endian)) means that the bit at offset 3 is set. 
 This bit is a marker that Data Descriptor (EXT) will be written after the file data. 
 Compression method `0x0008` means [DEFLATE](https://en.wikipedia.org/wiki/DEFLATE).
+
+
+TL;DR:
+Excel seem to require zip spec. version 4.5 in Local File Header if ZIP64 is used anywhere
+with this zip entry (Central directory file header or Data descriptor).
+When the zip (xlsx) is created on a OutputStream, files size and crc is not know at the time 
+of writing Local file header. 
