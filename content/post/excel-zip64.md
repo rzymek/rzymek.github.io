@@ -31,14 +31,15 @@ On the other hand current [Excel limits](https://support.office.com/en-us/articl
 As you might have guested, the `4GB` limit in ZIP files was overcome years ago. In 2001 actually, in the version 4.5 of the PKZIP specification. With the introduction of ZIP64 extension.
 
 
-This is sufficient for can handle file sizes 
-TTTTTTT
+This is sufficient to handle file sizes .....
+
+
 Excel is quite strict when it comes to ZIP64 extension.
 
 Let's first look a at standard zip file structure:
 ```
  +============+     
- | LFH-1      |   - Local file header for 
+ | LFH-1      |   - Local file header for file 1
  +------------+
  | Compressed |   - Usually using deflate compression
  | file 1     |
@@ -68,7 +69,7 @@ Let's first look a at standard zip file structure:
  +------------+     points to each corresponding LFH offset
  | CEN-2      |
  +------------+
- | ...        |
+ | ...        | 
  +------------+
  | CEN-n      |
  +============+     
@@ -85,14 +86,22 @@ Zip does fully support this. There are field to store size, crc and compressed s
 Let's look closely at a zip format Excel fully accepts.
 First the complete LFH - Local File Header:
 ```
-50 4B 03 04 2D 00 08 00 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 08 00 00 00 
-|----------|-----|-----|-----|-----------|-----------|-----------|-----------|-----|-----|
- 'PK\03\04'   |   flags   |   time & date    CRC-32        |     uncompressed   |     | 
- LFH          |           |                           compressed     size       |     | 
- signature    |     compression                         size                filename  |
-              |       method                                                 length   |
-           version                                                                  extra
-           2D = 45                                                               field length
+ 50 4B 03 04 2D 00 08 00 08 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ...
+|-----------|-----|-----|-----|-----------|-----------|-----------|-----------|
+ 'PK\03\04'   |   flags   |   time & date    CRC-32        |     uncompressed  
+ LFH          |           |                           compressed     size      
+ signature    |     compression                         size                
+              |       method                                                
+           version                                                          
+           2D = 45                                                          
+```
+```           
+... 18 00 00 00 78 6C 2F 77 6F 72 6B 73 68 65 65 74 73 2F 73 68 65 65 74 31 2E 78 6D 6C 
+   |-----|-----|-----------------------------------------------------------------------|
+      |     |      filename ('xl/worksheets/sheet1.xml')
+ filename   |      24 bytes (0x18) in this case
+ length     |
+          extra field length
 ```
 
 Version `0x2D` = `45` is interpreted as 4.5. This is the ZIP specification version where ZIP64 extension was introduced.
@@ -100,6 +109,60 @@ Flag value `0x0008` ([little-endian](https://en.wikipedia.org/wiki/Little-endian
 This bit is a marker that Data Descriptor (EXT) will be written after the file data. 
 Compression method `0x0008` means [DEFLATE](https://en.wikipedia.org/wiki/DEFLATE).
 
+After the header comes actual compressed file data. When reimplementing the zip format (to match Excel expectations) 
+I just used [java.util.zip.DeflaterOutputStream](https://docs.oracle.com/javase/8/docs/api/java/util/zip/DeflaterOutputStream.html). Actually I did extended it to add functionality to record CRC and to wrap it in `BufferedOutputStream`. Turns out if you don't feed `DeflaterOutputStream` in chunks of about `4096` bytes it becomes really slow. Like *three times slower*. I did stumble upon this observation while browsing through 
+[`commons-compress` sources](https://github.com/apache/commons-compress/blob/c03704d773dfa0dfc5b2e53b4c198a95d0213ca0/src/main/java/org/apache/commons/compress/archivers/zip/StreamCompressor.java#L42):
+
+    /*
+     * Apparently Deflater.setInput gets slowed down a lot on Sun JVMs
+     * when it gets handed a really big buffer.  See
+     * https://issues.apache.org/bugzilla/show_bug.cgi?id=45396
+     *
+     * Using a buffer size of 8 kB proved to be a good compromise
+     */
+
+Getting back to ZIP structure. After compressed file data comes the optional *Data Descriptor* (EXT) header. It contains CRC, size and compressed size. Initially 4 bytes were reserved for each of these values. ZIP specification 4.5 is used, the compressed and uncompressed sizes are 8 bytes each.
+```
+ 50 4B 07 08 73 B9 D9 10 06 66 30 21 00 00 00 00 9A 90 DC 15 01 00 00 00
+|-----------|-----------|-----------------------|-----------------------|
+ 'PK\07\08'    CRC-32    compressed size          uncompressed size
+                          0x21 30 66 06 =          0x01 15 DC 90 9A =
+                          556819974 bytes (532mb)  4661743770 bytes (4,4GiB)
+```
+
+This is repeated for every file.
+
+
+After all the files comes the *Central Directory*. Here for every file comes a structure very similar to local file header. 
+
+```
+ 50 4B 01 02 2D 00 2D 00 00 00 08 00 00 00 00 00 73 B9 D9 10 06 66 30 21 FF FF FF FF ...
+|-----------|-----|-----|-----|-----|-----------|-----------|-----------|-----------| 
+
+```
+```
+... 18 00 0C 00 00 00 00 00 00 00 00 00 00 00 C4 08 00 00 ...
+   |-----|-----|-----|-----|-----|-----------|-----------| 
+```
+```
+... 78 6C 2F 77 6F 72 6B 73 68 65 65 74 73 2F 73 68 65 65 74 31 2E 78 6D 6C ...
+   |-----------------------------------------------------------------------|
+     filename ('xl/worksheets/sheet1.xml')
+     24 bytes (0x18) in this case
+```
+```
+
+... 01 00 08 00 9A 90 DC 15 01 00 00 00 
+   |-----|-----|-----------------------|
+    sig    size     compressed size
+```
+
+
+```
+ 50 4B 05 06 00 00 00 00 08 00 08 00 09 02 00 00 18 6F 30 21 00 00
+|-----------|-----|-----|-----|-----|-----------|-----------|-----|
+  END sig     
+```
 
 TL;DR:
 Excel seem to require zip spec. version 4.5 in Local File Header if ZIP64 is used anywhere
