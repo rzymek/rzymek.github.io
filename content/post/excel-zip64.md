@@ -6,10 +6,13 @@ title = "Excel and ZIP64"
 draft = true
 +++
 
+**TL;DR;** Excel has requires specific ZIP flag values in `.xlsx` that Java's ZIP implementation
+does not provide when streaming.
+
 # Problem with huge XLSX files
 
 The standard in Excel file creation in Java is [Apache POI](http://poi.apache.org/). 
-It works fine, a bit slow, but still fine. But up to some size limit, arbitrary 
+It works fine, a bit slow, but still fine. As it turns out up to some size limit, arbitrary 
 at first sight. You can try it yourself. Just run this piece of code:
 
     try (SXSSFWorkbook wb = new SXSSFWorkbook(new XSSFWorkbook())) {
@@ -24,6 +27,8 @@ at first sight. You can try it yourself. Just run this piece of code:
         wb.write(out);
       }
     }
+
+[Excel can handle](https://support.office.com/en-us/article/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3) up to 1,048,576 rows by 16,384 columns, so this is well within the limit. 
 
 Try to open the resulting `big.xlsx` file in Excel. It will almost instantly 
 pop up this dialog:
@@ -101,8 +106,7 @@ Let's see what this this particular size mark has to do with ZIP internals.
 ## 4GB in ZIP
 
 Standard ZIP format has 4 bytes reserved for file size. The maximum is therefore `0xFFFF FFFF` or `256^4-1`, `2^32-1`. 
-In other words (numbers) its `4_294_967_295`, that is 4GB minus 1 byte.  An unimaginably huge size in 1989 when the first PKZIP spec was published. Not that big now. On the other hand current [Excel limits](https://support.office.com/en-us/article/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3)
- reach up to 1,048,576 rows by 16,384 columns. The internal `sheet1.xml` file will break the `4GB` limit at about 1 milion rows with 125 columns - with number cell only. Excel handles this amount of data suprisingly well. At least on by 32GB RAM machine.
+In other words (numbers) its `4_294_967_295`, that is 4GB minus 1 byte.  An unimaginably huge size in 1989 when the first PKZIP spec was published. Not that big now. The internal `sheet1.xml` file will break the `4GB` limit at about 1 million rows with 100 columns - with number cell only. Excel handles this amount of data surprisingly well. At least on by 32GB RAM machine.
 
 As you might have guested, the `4GB` limit in ZIP files was overcome years ago. In 2001 actually, in the version 4.5 of the PKZIP specification. With the introduction of ZIP64 extension.
 
@@ -192,7 +196,7 @@ This bit is a marker that Data Descriptor (EXT) will be written after the file d
 Compression method `0x0008` means [DEFLATE](https://en.wikipedia.org/wiki/DEFLATE). 
 
 ```
-void writeLFH(XlsxZipEntry entry) throws IOException {
+void writeLFH(ZipEntry entry) throws IOException {
   writeInt(0x04034b50L);                        // "PK\003\004"
   writeShort(45);                               // version required: 4.5
   writeShort(8);                                // flags: 8 = data descriptor used
@@ -230,11 +234,11 @@ Getting back to ZIP structure. After compressed file data comes the optional *Da
                           556819974 bytes (532mb)  4661743770 bytes (4,4GiB)
 ```
 ```
-void writeEXT(ZipEntry e) throws IOException {
-  writeInt(0x08074b50L);       // data descriptor signature "PK\007\008"
-  writeInt(e.crc);             // crc-32
-  writeLong(e.compressedSize); // compressed size (zip64)
-  writeLong(e.size);           // uncompressed size (zip64)
+void writeEXT(ZipEntry entry) throws IOException {
+  writeInt(0x08074b50L);           // data descriptor signature "PK\007\008"
+  writeInt(entry.crc);             // crc-32
+  writeLong(entry.compressedSize); // compressed size (zip64)
+  writeLong(entry.size);           // uncompressed size (zip64)
 }
 ```
 
@@ -285,7 +289,7 @@ At the end of the entry comes ZIP64 section foretold by `0x0C00` in extra field 
 ```
 
 ```
-void writeCEN(XlsxZipEntry entry) throws IOException {
+void writeCEN(ZipEntry entry) throws IOException {
   boolean useZip64 = entry.size > 0xffffffffL;
   writeInt(0x02014b50L);                         // "PK\001\002"
   writeShort(45);                                // version made by: 4.5
@@ -354,8 +358,9 @@ void writeEND(int entriesCount, int offset, int length) throws IOException {
 }
 ```
 
-TL;DR:
-Excel seem to require zip spec. version 4.5 in Local File Header if ZIP64 is used anywhere
+## Conclusions 
+
+Excel seem to require zip specification version 4.5 in Local File Header if ZIP64 is used anywhere
 with this zip entry (Central directory file header or Data descriptor).
 When the zip (xlsx) is created on a OutputStream, files size and crc is not know at the time 
 of writing Local file header. 
