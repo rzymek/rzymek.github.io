@@ -1,6 +1,6 @@
 +++
 bigimg = ""
-date = "2018-11-14"
+date = "2018-12-03"
 subtitle = "Deep dive into ZIP file format in the context of .xlsx"
 title = "Excel and ZIP64"
 +++
