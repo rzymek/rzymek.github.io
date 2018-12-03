@@ -3,7 +3,6 @@ bigimg = ""
 date = "2018-11-14"
 subtitle = "Deep dive into ZIP file format in the context of .xlsx"
 title = "Excel and ZIP64"
-draft = true
 +++
 
 **TL;DR;** Excel has requires specific ZIP flag values in `.xlsx` that Java's ZIP implementation
@@ -248,6 +247,8 @@ This is repeated for every file.
 ### Central directory
 
 After all the files comes the *Central Directory*. Here for every file comes a structure very similar to local file header. 
+Seems Excel really focuses on LFH and is not that strict with central directory. Nevertheless here's an example and implementation
+that will just work.
 
 ```
  50 4B 01 02 2D 00 2D 00 08 00 08 00 00 00 00 00 73 B9 D9 10 06 66 30 21 FF FF FF FF ...
@@ -323,6 +324,8 @@ But in LFH, the flag value **must** be 8 is ZIP64 is used.
 
 ### End of central directory record
 
+Nothing out of the ordinary here as well. Standard stuff:
+
 ```
  50 4B 05 06 00 00 00 00 08 00 08 00 09 02 00 00 18 6F 30 21 00 00
 |-----------|-----|-----|-----|-----|-----------|-----------|-----|
@@ -360,7 +363,5 @@ void writeEND(int entriesCount, int offset, int length) throws IOException {
 
 ## Conclusions 
 
-Excel seem to require zip specification version 4.5 in Local File Header if ZIP64 is used anywhere
-with this zip entry (Central directory file header or Data descriptor).
-When the zip (xlsx) is created on a OutputStream, files size and crc is not know at the time 
-of writing Local file header. 
+It seems critical to Excel that the zip specification version is 4.5 in Local File Header if ZIP64 is used anywhere
+with this zip entry (Central directory file header or Data descriptor). 
