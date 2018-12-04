@@ -92,8 +92,9 @@ and went to implement my own ZIP format that *will* be consumed by Excel.
 
 Smaller xlsx files generated with Apache POI obviously open correctly in Excel. Well, duh. Thousands of 
 developers are using it. It turns out not many of them are generating files that big. 
-I found two bugs in the Apache POI bugzilla that describe this exact issue. They are
+I found a few bugs in the Apache POI bugzilla that describe this exact issue. They are
 
+* [54523](https://bz.apache.org/bugzilla/show_bug.cgi?id=54523) from **2013**-02-05 (!)
 * [57342](https://bz.apache.org/bugzilla/show_bug.cgi?id=57342) from **2014**-12-11 (!)
 * [61832](https://bz.apache.org/bugzilla/show_bug.cgi?id=61832) from 2017-11-29.
 
