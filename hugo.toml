@@ -1,23 +1,18 @@
+baseURL = "https://rzymek.github.io/"
 languageCode = "en-us"
 title = "rzymek's rumblings"
-baseURL = "https://rzymek.github.io/"
 theme = "beautifulhugo"
 
-disqusShortname = "rzymek"
-googleAnalytics = "UA-54107063-5"
-
-[Params.Posts]
-  foldername = "post"
-  pagesize = 6
-  featuredpost = "true"
-[Params]
+[params]
   logo = "img/rzymek.jpg"
-[Author]
+
+[params.author]
   name = "Krzysiek Rzymkowski"
   email = "rzymek@gmail.com"
   github = "rzymek"
   stackoverflow = "users/211205/rzymek"
   linkedin = "krzysztof-rzymkowski"
-[[menu.main]]
+
+[[menus.main]]
   name = "About"
   url = "https://gist.github.com/rzymek/571d5a54fe5f40515488"
